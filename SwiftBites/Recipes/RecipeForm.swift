@@ -296,9 +296,11 @@ struct RecipeForm: View {
             if let categoryId = categoryId {
                 let descriptor = FetchDescriptor<Category>()
                 
-                category = try storage.fetch(descriptor).first(where: {$0.id == categoryId})
+                category = categories.first(where: {$0.id == categoryId})
+                print(category?.name, category?.recipes.count)
             } else {
                 category = nil
+                print(category?.name, category?.recipes.count, categories.count)
             }
             
             switch mode {
@@ -311,7 +313,14 @@ struct RecipeForm: View {
                                     ingredients: ingredients,
                                     instructions: instructions,
                                     imageData: imageData)
+
+                
+                if let category = category { category.recipes.append(recipe)}
+                
                 storage.insert(recipe)
+                
+               try storage.save()
+                
             case .edit(let recipe):
                 if recipe.name != name || recipe.summary != summary ||
                     recipe.category?.id != category?.id || recipe.serving != serving ||

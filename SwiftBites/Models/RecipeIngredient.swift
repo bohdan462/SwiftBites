@@ -26,6 +26,8 @@ final class RecipeIngredient: Identifiable, Hashable {
         self.id = id
         self.ingredient = ingredient
         self.quantity = quantity
+        
+//        print("Creating RecipeIngredient with ingredient: \(ingredient.name), quantity: \(quantity), recipe: \(recipe.name)")
     }
     
     static func == (lhs: RecipeIngredient, rhs: RecipeIngredient) -> Bool {
