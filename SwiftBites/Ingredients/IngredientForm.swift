@@ -68,6 +68,7 @@ struct IngredientForm: View {
     
     private func delete(ingredient: Ingredient) {
         storage.delete(ingredient)
+        try? storage.save()
         dismiss()
     }
     
@@ -76,6 +77,7 @@ struct IngredientForm: View {
             switch mode {
             case .add:
                 storage.insert(Ingredient(name: name))
+                try storage.save()
 //                storage.insert(RecipeIngredient(ingredient: Ingredient(name: name)))
             case .edit(let ingredient):
                 ingredient.name = name

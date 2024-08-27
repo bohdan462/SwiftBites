@@ -70,6 +70,7 @@ struct CategoryForm: View {
     
     private func delete(category: Category) {
         storage.delete(category)
+        try? storage.save()
         dismiss()
     }
     
@@ -84,6 +85,7 @@ struct CategoryForm: View {
                     return
                 }
                 storage.insert(Category(name: name))
+                try storage.save()
             case .edit(let category):
                 category.name = name
                 try storage.save()

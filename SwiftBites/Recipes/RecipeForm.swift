@@ -89,12 +89,23 @@ struct RecipeForm: View {
     
     private func ingredientPicker() -> some View {
         IngredientsView { selectedIngredient in
-            let recipeIngredient = RecipeIngredient(ingredient: selectedIngredient, quantity: "")
-            print("Before", ingredients.count)
-            storage.insert(recipeIngredient)
-            ingredients.append(recipeIngredient)
-            print("After", ingredients.count)
+            print(selectedIngredient.name)
             
+            DispatchQueue.main.async {
+                let recipeIngredient = RecipeIngredient(ingredient: selectedIngredient, quantity: "")
+                
+
+                selectedIngredient.recipeIngredient = recipeIngredient
+                recipeIngredient.ingredient = selectedIngredient
+                ingredients.append(recipeIngredient)
+                storage.insert(recipeIngredient)
+
+                do {
+                    try storage.save()
+                } catch {
+                    
+                }
+            }
             
         }
     }
@@ -266,6 +277,7 @@ struct RecipeForm: View {
         }
         //    storage.deleteRecipe(id: recipe.id)
         storage.delete(recipe)
+        try? storage.save()
         dismiss()
     }
     

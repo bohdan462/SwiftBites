@@ -100,27 +100,16 @@ struct IngredientsView: View {
         if let selection {
             Button(
                 action: {
-                    
                     withAnimation {
                                 do {
-                                    try storage.save()
+//                                    try storage.save()
                                     selection(ingredient) // UI update happens after save
                                     dismiss()
                                 } catch {
                                     print("Save failed: \(error)")
                                 }
                             }
-                    
-//                    selection(ingredient)
-//
-//                    dismiss()
-//                    ///Weird fix, do not know why Animation caused KVO failure on getValue
-//                    Task {
-//                        await MainActor.run {
-//                            try? storage.save()
-//                        }
-//                        
-//                    }
+            
                 },
                 label: {
                     title(for: ingredient)

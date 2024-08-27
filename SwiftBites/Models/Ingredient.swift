@@ -19,10 +19,13 @@ final class Ingredient: Identifiable, Hashable {
     
   
     var name: String
+    @Relationship
+    var recipeIngredient: RecipeIngredient?
     
-    init(id: UUID = UUID(), name: String = "") {
+    init(id: UUID = UUID(), name: String = "", recipeIngredient: RecipeIngredient? = nil) {
         self.id = id
         self.name = name
+        self.recipeIngredient = recipeIngredient
     }
     
     static func == (lhs: Ingredient, rhs: Ingredient) -> Bool {
