@@ -12,6 +12,7 @@ struct IngredientsView: View {
     
     @Environment(\.modelContext) private var storage
     @Environment(\.dismiss) private var dismiss
+    @State private var error: Error?
     @State private var query = ""
     @Query private var ingredients: [Ingredient]
     
@@ -31,6 +32,7 @@ struct IngredientsView: View {
                 .navigationDestination(for: IngredientForm.Mode.self) { mode in
                     IngredientForm(mode: mode)
                 }
+                .alert(error: $error)
         }
     }
     
@@ -103,6 +105,14 @@ struct IngredientsView: View {
                     withAnimation {
                                 do {
 //                                    try storage.save()
+                                    
+//                                    let existingRecipeIngredient = recipeIngredients.contains(where: {$0.ingredient.name == ingredient.name})
+//                                    
+//                                    guard !existingRecipeIngredient else {
+//                                        self.error = .recipeIngredient
+//                                        print("It should show alert")
+//                                        return
+//                                    }
                                     selection(ingredient) // UI update happens after save
                                     dismiss()
                                 } catch {

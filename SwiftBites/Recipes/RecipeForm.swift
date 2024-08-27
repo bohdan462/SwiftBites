@@ -71,6 +71,7 @@ struct RecipeForm: View {
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .alert(error: $error)
+        
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Save", action: save)
@@ -86,29 +87,58 @@ struct RecipeForm: View {
     }
     
     // MARK: - Views
-    
+    @MainActor
     private func ingredientPicker() -> some View {
         IngredientsView { selectedIngredient in
+            print("Array of RecipeInredients: \(ingredients.count)")
             print(selectedIngredient.name)
             
-            DispatchQueue.main.async {
-                let recipeIngredient = RecipeIngredient(ingredient: selectedIngredient, quantity: "")
+            let existingRecipeIngredient = ingredients.contains(where: {$0.ingredient.name == selectedIngredient.name})
+            
+            guard !existingRecipeIngredient else {
                 
-
-                selectedIngredient.recipeIngredient = recipeIngredient
-                recipeIngredient.ingredient = selectedIngredient
-                ingredients.append(recipeIngredient)
-                storage.insert(recipeIngredient)
-
-                do {
-                    try storage.save()
-                } catch {
-                    
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.error = .recipeIngredient
                 }
+                
+                return
             }
             
+            //            let descriptor = FetchDescriptor<RecipeIngredient>()
+            //
+            //            do {
+            //                let ingredient = try storage.fetch(descriptor).first { $0.ingredient.name == selectedIngredient.name}
+            //                guard ingredient == nil else {
+            //                    print("Recipe exists")
+            //                    return
+            //                }
+            //            } catch {
+            //
+            //            }
+            let recipeIngredient = RecipeIngredient(ingredient: selectedIngredient, quantity: "")
+            
+            
+            selectedIngredient.recipeIngredient = recipeIngredient
+            recipeIngredient.ingredient = selectedIngredient
+            
+            //FIRST INSERT THEN APPEND
+            //            storage.insert(recipeIngredient)
+            ingredients.append(recipeIngredient)
+            
+            do {
+                
+                try storage.save()
+            } catch {
+                
+            }
+            
+            
+        }
+        .onAppear {
+            print(ingredients.count)
         }
     }
+    
     
     @ViewBuilder
     private func imageSection(width: CGFloat) -> some View {
@@ -271,11 +301,12 @@ struct RecipeForm: View {
     
     // MARK: - Data
     
+    
     func delete(recipe: Recipe) {
         guard case .edit(let recipe) = mode else {
             fatalError("Delete unavailable in add mode")
         }
-        //    storage.deleteRecipe(id: recipe.id)
+        print("recipe to delete \(recipe.name)")
         storage.delete(recipe)
         try? storage.save()
         dismiss()
@@ -299,20 +330,17 @@ struct RecipeForm: View {
     //        }
     //    }
     
-    @MainActor
+    //    @MainActor
     func save() {
         
         let category: Category?
         
         do {
             if let categoryId = categoryId {
-                let descriptor = FetchDescriptor<Category>()
-                
+                //                let descriptor = FetchDescriptor<Category>()
                 category = categories.first(where: {$0.id == categoryId})
-                print(category?.name, category?.recipes.count)
             } else {
                 category = nil
-                print(category?.name, category?.recipes.count, categories.count)
             }
             
             switch mode {
@@ -322,16 +350,16 @@ struct RecipeForm: View {
                                     category: category,
                                     serving: serving,
                                     time: time,
-                                    ingredients: ingredients,
                                     instructions: instructions,
                                     imageData: imageData)
-
+                
                 
                 if let category = category { category.recipes.append(recipe)}
                 
                 storage.insert(recipe)
+                recipe.ingredients = ingredients
                 
-               try storage.save()
+                try storage.save()
                 
             case .edit(let recipe):
                 if recipe.name != name || recipe.summary != summary ||
@@ -354,7 +382,7 @@ struct RecipeForm: View {
             }
             dismiss()
         } catch {
-            self.error = error
+            self.error = error as? Error
         }
     }
 }

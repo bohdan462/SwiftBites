@@ -22,10 +22,11 @@ final class RecipeIngredient: Identifiable, Hashable {
     
     var quantity: String
     
-    init(id: UUID = UUID(), ingredient: Ingredient = Ingredient(), quantity: String = "") {
+    init(id: UUID = UUID(), ingredient: Ingredient, quantity: String = "") {
         self.id = id
         self.ingredient = ingredient
         self.quantity = quantity
+        
     }
     
     static func == (lhs: RecipeIngredient, rhs: RecipeIngredient) -> Bool {

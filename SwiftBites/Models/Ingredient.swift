@@ -15,10 +15,11 @@ final class Ingredient: Identifiable, Hashable {
         case name
     }
     
-    let id: UUID
+    @Attribute(.unique) let id: UUID
     
   
     var name: String
+    
     @Relationship
     var recipeIngredient: RecipeIngredient?
     

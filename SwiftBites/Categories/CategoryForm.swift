@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct CategoryForm: View {
+    
     enum Mode: Hashable {
         case add
         case edit(Category)
@@ -24,6 +25,7 @@ struct CategoryForm: View {
     private let title: String
     @State private var name: String
     @State private var error: Error?
+    
     @Environment(\.modelContext) private var storage
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isNameFocused: Bool
@@ -40,6 +42,7 @@ struct CategoryForm: View {
                 Button(
                     role: .destructive,
                     action: {
+                        
                         delete(category: category)
                     },
                     label: {
@@ -55,6 +58,7 @@ struct CategoryForm: View {
         .onSubmit {
             save()
         }
+        
         .alert(error: $error)
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
@@ -81,7 +85,7 @@ struct CategoryForm: View {
             case .add:
                 let descriptor = FetchDescriptor<Category>()
                 guard try (storage.fetch(descriptor).first(where: {$0.name == name }) != nil) == false else {
-                    self.error = error
+                    self.error = .categoryExists
                     return
                 }
                 storage.insert(Category(name: name))
@@ -92,7 +96,7 @@ struct CategoryForm: View {
             }
             dismiss()
         } catch {
-            self.error = error
+            self.error = error as? Error
         }
     }
 }

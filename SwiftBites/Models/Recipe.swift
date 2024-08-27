@@ -26,7 +26,7 @@ final class Recipe: Identifiable, Hashable {
     var time: Int
     
     //Relationship
-    @Relationship(deleteRule: .cascade)
+    @Relationship(deleteRule: .nullify)
     var ingredients: [RecipeIngredient]
     
     var instructions: String
