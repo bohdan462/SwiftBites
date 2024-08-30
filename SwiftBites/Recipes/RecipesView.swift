@@ -12,19 +12,19 @@ struct RecipesView: View {
   var body: some View {
     NavigationStack {
       content
-        .navigationTitle("Recipes")
+            .navigationTitle("Recipes")
         .toolbar {
           if !recipes.isEmpty {
             sortOptions
             ToolbarItem(placement: .topBarTrailing) {
-              NavigationLink(value: RecipeForm.Mode.add) {
+                NavigationLink(value: RecipeForm.Mode.add) {
                 Label("Add", systemImage: "plus")
               }
             }
           }
         }
         .navigationDestination(for: RecipeForm.Mode.self) { mode in
-          RecipeForm(mode: mode)
+            RecipeForm(mode: mode)
         }
     }
   }
@@ -80,7 +80,7 @@ struct RecipesView: View {
         Text("Recipes you add will appear here.")
       },
       actions: {
-        NavigationLink("Add Recipe", value: RecipeForm.Mode.add)
+          NavigationLink("Add Recipe", value: RecipeForm.Mode.add)
           .buttonBorderShape(.roundedRectangle)
           .buttonStyle(.borderedProminent)
       }

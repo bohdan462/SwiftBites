@@ -74,15 +74,19 @@ struct CategoryForm: View {
     
     private func delete(category: Category) {
         storage.delete(category)
-        try? storage.save()
+        do {
+            try storage.save()
+        } catch {
+            self.error = .deleteError(item: error.localizedDescription)
+        }
         dismiss()
     }
     
     private func save() {
         
-        do {
-            switch mode {
-            case .add:
+        switch mode {
+        case .add:
+            do {
                 let descriptor = FetchDescriptor<Category>()
                 guard try (storage.fetch(descriptor).first(where: {$0.name == name }) != nil) == false else {
                     self.error = .categoryExists
@@ -90,13 +94,17 @@ struct CategoryForm: View {
                 }
                 storage.insert(Category(name: name))
                 try storage.save()
-            case .edit(let category):
-                category.name = name
-                try storage.save()
+            } catch {
+                self.error = .addError(item: error.localizedDescription)
             }
-            dismiss()
-        } catch {
-            self.error = error as? Error
+        case .edit(let category):
+            category.name = name
+            do {
+                try storage.save()
+            } catch {
+                self.error = .editError(item: error.localizedDescription)
+            }
         }
+        dismiss()
     }
 }

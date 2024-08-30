@@ -7,7 +7,7 @@ extension View {
       set: { if !$0 { error.wrappedValue = nil } }
     )) {
       Alert(
-        title: Text("Error"),
+        title: Text("Oops!"),
         message: Text(error.wrappedValue?.localizedDescription ?? "An unknown error occurred."),
         dismissButton: .default(Text("Dismiss"))
       )
@@ -15,19 +15,3 @@ extension View {
   }
 }
 
-  enum StorageError: LocalizedError {
-    case ingredientExists
-    case categoryExists
-    case recipeExists
-
-    var errorDescription: String? {
-      switch self {
-      case .ingredientExists:
-        return "Ingredient with the same name exists"
-      case .categoryExists:
-        return "Category with the same name exists"
-      case .recipeExists:
-        return "Recipe with the same name exists"
-      }
-    }
-  }

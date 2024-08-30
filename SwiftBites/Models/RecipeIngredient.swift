@@ -10,23 +10,22 @@ import SwiftData
 
 @Model
 final class RecipeIngredient: Identifiable, Hashable {
-    enum CodingKeys: String, CodingKey {
-        case id, ingredient, quantity
-    }
-    
-    @Attribute(.unique) let id: UUID
-    
-    //Relationship?
+
+    @Attribute(.unique) 
+    let id: UUID
+    @Relationship(inverse: \Recipe.ingredients)
+    var recipe: Recipe?
     @Relationship(deleteRule: .nullify)
-    var ingredient: Ingredient
-    
+    var ingredient: Ingredient?
+    let name: String = ""
     var quantity: String
     
-    init(id: UUID = UUID(), ingredient: Ingredient, quantity: String = "") {
+    init(id: UUID = UUID(), ingredient: Ingredient?, recipe: Recipe? = nil, quantity: String = "") {
         self.id = id
         self.ingredient = ingredient
+        self.recipe = recipe
         self.quantity = quantity
-        
+        self.name = ingredient?.name ?? ""
     }
     
     static func == (lhs: RecipeIngredient, rhs: RecipeIngredient) -> Bool {
@@ -36,22 +35,4 @@ final class RecipeIngredient: Identifiable, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
-//    ///Decodable
-//    required init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        self.id = try container.decode(UUID.self, forKey: .id)
-//        self.ingredient = try container.decode(Ingredient.self, forKey: .ingredient)
-//        self.quantity = try container.decode(String.self, forKey: .quantity)
-//    }
-//    
-//    
-//    ///Encodable
-//    func encode(to encoder: Encoder) throws {
-//        var conteiner = encoder.container(keyedBy: CodingKeys.self)
-//        try conteiner.encode(id, forKey: .id)
-//        try conteiner.encode(ingredient, forKey: .ingredient)
-//        try conteiner.encode(quantity, forKey: .quantity)
-//        
-//    }
 }

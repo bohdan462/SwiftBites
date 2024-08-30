@@ -3,12 +3,9 @@ import SwiftData
 
 struct CategoriesView: View {
     
-    @Environment(\.modelContext) private var storage
     @State private var query = ""
     @Query private var categories: [Category]
     @State private var refreshTrigger = false
-    
-
     
     // MARK: - Body
     
@@ -29,9 +26,7 @@ struct CategoriesView: View {
                 .navigationDestination(for: RecipeForm.Mode.self) { mode in
                     RecipeForm(mode: mode)
                 }
-            
         }
-    /// NavigationStack
     }
     
     // MARK: - Views
@@ -87,8 +82,6 @@ struct CategoriesView: View {
             }
         }
         .searchable(text: $query)
-        ///Weird bug fix, even tho objects gets inserted into category, the view wont reload automaticlly
-        /// Refresh to show latest recipes
         .id(refreshTrigger)
         .onAppear {
             refreshTrigger.toggle()

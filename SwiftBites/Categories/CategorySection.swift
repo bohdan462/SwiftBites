@@ -53,7 +53,7 @@ struct CategorySection: View {
         Text("Recipes you add will appear here.")
       },
       actions: {
-        NavigationLink("Add Recipe", value: RecipeForm.Mode.add)
+          NavigationLink("Add Recipe", value: RecipeForm.Mode.add)
           .buttonBorderShape(.roundedRectangle)
           .buttonStyle(.bordered)
       }

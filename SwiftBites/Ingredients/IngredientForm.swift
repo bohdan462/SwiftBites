@@ -33,16 +33,6 @@ struct IngredientForm: View {
     
     var body: some View {
         Form {
-            Button(
-                role: .destructive,
-                action: {
-                    deleteAllData()
-                },
-                label: {
-                    Text("Delete AllData")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-            )
             Section {
                 TextField("Name", text: $name)
                     .focused($isNameFocused)
@@ -80,66 +70,37 @@ struct IngredientForm: View {
     // MARK: - Data
     
     private func delete(ingredient: Ingredient) {
+        
         storage.delete(ingredient)
-        try? storage.save()
+        
+        do {
+            try storage.save()
+        } catch {
+            self.error = .deleteError(item: error.localizedDescription)
+        }
         dismiss()
     }
     
-    private func deleteAllData() {
-        do {
-                // Deleting all instances of Recipe
-                let allRecipes = try storage.fetch(FetchDescriptor<Recipe>())
-                for recipe in allRecipes {
-                    storage.delete(recipe)
-                }
-                
-                // Deleting all instances of RecipeIngredient
-                let allRecipeIngredients = try storage.fetch(FetchDescriptor<RecipeIngredient>())
-                for recipeIngredient in allRecipeIngredients {
-                    storage.delete(recipeIngredient)
-                }
-                
-                // Deleting all instances of Ingredient
-                let allIngredients = try storage.fetch(FetchDescriptor<Ingredient>())
-                for ingredient in allIngredients {
-                    storage.delete(ingredient)
-                }
-                
-                // Deleting all instances of Category
-                let allCategories = try storage.fetch(FetchDescriptor<Category>())
-                for category in allCategories {
-                    storage.delete(category)
-                }
-                
-                // Save the context to apply the deletions
-                try storage.save()
-            } catch {
-                print("Failed to delete data: \(error.localizedDescription)")
-            }
-    }
-    
     private func save() {
-        do {
-            switch mode {
-            case .add:
-                
-                let descriptor = FetchDescriptor<Ingredient>()
-                guard try (storage.fetch(descriptor).first(where: {$0.name == name }) != nil) == false else {
-                    self.error = .ingredientExists
-                    return
-                }
-                
-                
+        
+        switch mode {
+        case .add:
+            do {
                 storage.insert(Ingredient(name: name))
                 try storage.save()
-//                storage.insert(RecipeIngredient(ingredient: Ingredient(name: name)))
-            case .edit(let ingredient):
-                ingredient.name = name
-                try storage.save()
             }
-            dismiss()
-        } catch {
-            self.error = error as? Error
+            catch {
+                self.error = .addError(item: error.localizedDescription)
+            }
+        case .edit(let ingredient):
+            ingredient.name = name
+            do {
+                try storage.save()
+            } catch {
+                self.error = .editError(item: error.localizedDescription)
+            }
         }
+        dismiss()
+        
     }
 }

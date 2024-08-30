@@ -103,23 +103,11 @@ struct IngredientsView: View {
             Button(
                 action: {
                     withAnimation {
-                                do {
-//                                    try storage.save()
-                                    
-//                                    let existingRecipeIngredient = recipeIngredients.contains(where: {$0.ingredient.name == ingredient.name})
-//                                    
-//                                    guard !existingRecipeIngredient else {
-//                                        self.error = .recipeIngredient
-//                                        print("It should show alert")
-//                                        return
-//                                    }
-                                    selection(ingredient) // UI update happens after save
-                                    dismiss()
-                                } catch {
-                                    print("Save failed: \(error)")
-                                }
-                            }
-            
+                        
+                        selection(ingredient)
+                        dismiss()
+                        
+                    }
                 },
                 label: {
                     title(for: ingredient)
@@ -140,6 +128,14 @@ struct IngredientsView: View {
     // MARK: - Data
     
     private func delete(ingredient: Ingredient) {
+        
         storage.delete(ingredient)
+        
+        do {
+            try storage.save()
+            print("Successfill save after delete of ingredient")
+        } catch {
+            self.error = .deleteError(item: error.localizedDescription)
+        }
     }
 }

@@ -33,6 +33,7 @@ struct RecipeForm: View {
             _categoryId = .init(initialValue: recipe.category?.id)
             _imageData = .init(initialValue: recipe.imageData)
             
+      
         }
     }
     
@@ -51,6 +52,7 @@ struct RecipeForm: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var storage
     @Query private var categories: [Category]
+
     
     // MARK: - Body
     
@@ -90,52 +92,22 @@ struct RecipeForm: View {
     @MainActor
     private func ingredientPicker() -> some View {
         IngredientsView { selectedIngredient in
-            print("Array of RecipeInredients: \(ingredients.count)")
-            print(selectedIngredient.name)
             
-            let existingRecipeIngredient = ingredients.contains(where: {$0.ingredient.name == selectedIngredient.name})
+            let existingRecipeIngredient = ingredients.contains(where: {$0.name == selectedIngredient.name})
             
             guard !existingRecipeIngredient else {
-                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    self.error = .recipeIngredient
-                }
-                
-                return
-            }
-            
-            //            let descriptor = FetchDescriptor<RecipeIngredient>()
-            //
-            //            do {
-            //                let ingredient = try storage.fetch(descriptor).first { $0.ingredient.name == selectedIngredient.name}
-            //                guard ingredient == nil else {
-            //                    print("Recipe exists")
-            //                    return
-            //                }
-            //            } catch {
-            //
-            //            }
+                    self.error = .recipeIngredientExists
+                } 
+                return }
+
             let recipeIngredient = RecipeIngredient(ingredient: selectedIngredient, quantity: "")
-            
-            
-            selectedIngredient.recipeIngredient = recipeIngredient
-            recipeIngredient.ingredient = selectedIngredient
-            
-            //FIRST INSERT THEN APPEND
-            //            storage.insert(recipeIngredient)
+            storage.insert(recipeIngredient)
             ingredients.append(recipeIngredient)
-            
-            do {
-                
-                try storage.save()
-            } catch {
-                
-            }
-            
-            
+
         }
         .onAppear {
-            print(ingredients.count)
+            
         }
     }
     
@@ -241,7 +213,8 @@ struct RecipeForm: View {
             } else {
                 ForEach(ingredients) { ingredient in
                     HStack(alignment: .center) {
-                        Text(ingredient.ingredient.name)
+                        
+                        Text(ingredient.name)
                             .bold()
                             .layoutPriority(2)
                         Spacer()
@@ -302,87 +275,87 @@ struct RecipeForm: View {
     // MARK: - Data
     
     
-    func delete(recipe: Recipe) {
+    private func delete(recipe: Recipe) {
         guard case .edit(let recipe) = mode else {
             fatalError("Delete unavailable in add mode")
         }
-        print("recipe to delete \(recipe.name)")
+
         storage.delete(recipe)
-        try? storage.save()
+        do {
+            try storage.save()
+        } catch {
+            self.error = .deleteError(item: error.localizedDescription)
+        }
         dismiss()
     }
     
-    func deleteIngredients(offsets: IndexSet) {
+    private func deleteIngredients(offsets: IndexSet) {
         withAnimation {
-            ingredients.remove(atOffsets: offsets)
+            if let index = offsets.first {
+               let recipeIngredient = ingredients.remove(at: index)
+                storage.delete(recipeIngredient)
+                
+            }
         }
     }
     
-    //    @MainActor
-    //    func updateRecipe(_ recipe: Recipe, withIngredients ingredients: [RecipeIngredient], in context: ModelContext) {
-    //        context.performAndWait {
-    //            recipe.ingredients = ingredients // Assign the ingredients
-    //            do {
-    //                try context.save()
-    //            } catch {
-    //                print("Failed to save recipe: \(error)")
-    //            }
-    //        }
-    //    }
-    
-    //    @MainActor
-    func save() {
+    private func save() {
         
-        let category: Category?
+        let category: Category? = categoryId.flatMap { id in categories.first(where: { $0.id == id }) }
         
-        do {
-            if let categoryId = categoryId {
-                //                let descriptor = FetchDescriptor<Category>()
-                category = categories.first(where: {$0.id == categoryId})
-            } else {
-                category = nil
+        switch mode {
+        case .add:
+            let recipe = Recipe(name: name,
+                                summary: summary,
+                                category: category,
+                                serving: serving,
+                                time: time,
+                                instructions: instructions,
+                                imageData: imageData)
+            
+            if let category = category { category.recipes.append(recipe) }
+            
+            let descriptor = FetchDescriptor<Recipe>()
+            guard ((try? (storage.fetch(descriptor).first(where: {$0.name == name }) != nil) == false) != nil) else {
+                self.error = .recipeExists
+                return
             }
             
-            switch mode {
-            case .add:
-                let recipe = Recipe(name: name,
-                                    summary: summary,
-                                    category: category,
-                                    serving: serving,
-                                    time: time,
-                                    instructions: instructions,
-                                    imageData: imageData)
-                
-                
-                if let category = category { category.recipes.append(recipe)}
-                
-                storage.insert(recipe)
-                recipe.ingredients = ingredients
-                
+            ingredients.forEach({$0.recipe = recipe})
+            recipe.ingredients = ingredients
+            
+            storage.insert(recipe)
+            
+            do {
                 try storage.save()
+            } catch {
+                self.error = .addError(item: error.localizedDescription)
+            }
+            
+        case .edit(let recipe):
+            if recipe.name != name || recipe.summary != summary ||
+                recipe.category?.id != category?.id || recipe.serving != serving ||
+                recipe.time != time || recipe.ingredients != ingredients ||
+                recipe.instructions != instructions || recipe.imageData != imageData {
                 
-            case .edit(let recipe):
-                if recipe.name != name || recipe.summary != summary ||
-                    recipe.category?.id != category?.id || recipe.serving != serving ||
-                    recipe.time != time || recipe.ingredients != ingredients ||
-                    recipe.instructions != instructions || recipe.imageData != imageData {
-                    
-                    recipe.name = name
-                    recipe.summary = summary
-                    recipe.category = category
-                    recipe.serving = serving
-                    recipe.time = time
-                    recipe.ingredients = ingredients
-                    recipe.instructions = instructions
-                    recipe.imageData = imageData
-                    
-                    
+                recipe.name = name
+                recipe.summary = summary
+                recipe.category = category
+                recipe.serving = serving
+                recipe.time = time
+                recipe.instructions = instructions
+                recipe.imageData = imageData
+                
+                ingredients.forEach({recipe.ingredients.append($0)})
+                ingredients.forEach({$0.recipe = recipe})
+                
+                do {
                     try storage.save()
+                } catch {
+                    self.error = .editError(item: error.localizedDescription)
                 }
             }
-            dismiss()
-        } catch {
-            self.error = error as? Error
         }
+        dismiss()
     }
 }

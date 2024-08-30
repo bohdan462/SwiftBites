@@ -10,16 +10,12 @@ import SwiftData
 
 @Model
 final class Category: Identifiable, Hashable {
-    enum CodingKeys: String, CodingKey {
-        case id
-        case name
-        case recipes
-    }
     
-    @Attribute(.unique) let id: UUID
+    @Attribute(.unique)
+    let id: UUID
+    @Attribute(.unique)
     var name: String
-    
-    //Relationship
+
     @Relationship(deleteRule: .nullify, inverse: \Recipe.category)
     var recipes: [Recipe]
     
@@ -35,23 +31,5 @@ final class Category: Identifiable, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
-    
-//    ///Decodable
-//    required init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        self.id = try container.decode(UUID.self, forKey: .id)
-//        self.name = try container.decode(String.self, forKey: .name)
-//        self.recipes = try container.decode([Recipe].self, forKey: .recipes)
-//    }
-//    
-//    
-//    ///Encodable
-//    func encode(to encoder: Encoder) throws {
-//        var conteiner = encoder.container(keyedBy: CodingKeys.self)
-//        try conteiner.encode(id, forKey: .id)
-//        try conteiner.encode(name, forKey: .name)
-//        try conteiner.encode(recipes, forKey: .recipes)
-//        
-//    }
+
 }
