@@ -15,18 +15,26 @@ final class RecipeIngredient: Identifiable, Hashable {
     let id: UUID
     @Relationship(inverse: \Recipe.ingredients)
     var recipe: Recipe?
-    @Relationship(deleteRule: .nullify)
+
+    @Relationship
     var ingredient: Ingredient?
     let name: String = ""
     var quantity: String
     
-    init(id: UUID = UUID(), ingredient: Ingredient?, recipe: Recipe? = nil, quantity: String = "") {
+    init(id: UUID = UUID(), ingredient: Ingredient? = nil, recipe: Recipe? = nil, quantity: String = "") {
         self.id = id
         self.ingredient = ingredient
         self.recipe = recipe
         self.quantity = quantity
-        self.name = ingredient?.name ?? ""
+        self.name = ingredient?.name ?? "Something Went Wrong"
     }
+    
+    func printDetails() {
+            print("RecipeIngredient Details:")
+            print("Ingredient Name: \(ingredient?.name ?? "Unknown Ingredient")")
+            print("Quantity: \(quantity)")
+        }
+    
     
     static func == (lhs: RecipeIngredient, rhs: RecipeIngredient) -> Bool {
         lhs.id == rhs.id

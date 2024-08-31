@@ -25,6 +25,9 @@
 		CA5C0F132C740D4100393EA7 /* RecipeIngredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5C0F122C740D4100393EA7 /* RecipeIngredient.swift */; };
 		CA5C0F152C740D6000393EA7 /* Ingredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5C0F142C740D6000393EA7 /* Ingredient.swift */; };
 		CA5C0F172C740D7F00393EA7 /* SwiftBitesContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5C0F162C740D7F00393EA7 /* SwiftBitesContainer.swift */; };
+		CA5C0F1C2C816E6F00393EA7 /* ShoppingCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5C0F1B2C816E6E00393EA7 /* ShoppingCartView.swift */; };
+		CA5C0F1E2C82BEFE00393EA7 /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5C0F1D2C82BEFE00393EA7 /* LaunchView.swift */; };
+		CA5C0F202C82C46700393EA7 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5C0F1F2C82C46700393EA7 /* Color.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +50,9 @@
 		CA5C0F122C740D4100393EA7 /* RecipeIngredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeIngredient.swift; sourceTree = "<group>"; };
 		CA5C0F142C740D6000393EA7 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
 		CA5C0F162C740D7F00393EA7 /* SwiftBitesContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBitesContainer.swift; sourceTree = "<group>"; };
+		CA5C0F1B2C816E6E00393EA7 /* ShoppingCartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingCartView.swift; sourceTree = "<group>"; };
+		CA5C0F1D2C82BEFE00393EA7 /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
+		CA5C0F1F2C82C46700393EA7 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +79,7 @@
 		07A2072F2AFAF5100048B7EA = {
 			isa = PBXGroup;
 			children = (
+				CA5C0F1F2C82C46700393EA7 /* Color.swift */,
 				07A2073A2AFAF5100048B7EA /* SwiftBites */,
 				07A207392AFAF5100048B7EA /* Products */,
 			);
@@ -90,15 +97,17 @@
 			isa = PBXGroup;
 			children = (
 				CA5C0F162C740D7F00393EA7 /* SwiftBitesContainer.swift */,
-				CA5C0F0D2C740C8C00393EA7 /* Models */,
 				07A2073B2AFAF5100048B7EA /* App.swift */,
 				07A2073D2AFAF5100048B7EA /* Main.swift */,
+				CA5C0F0D2C740C8C00393EA7 /* Models */,
 				0719D4252B058E1800B1A4E3 /* Categories */,
 				07B772002AFC1D2E007BF4B0 /* Ingredients */,
 				07B771FF2AFC1D22007BF4B0 /* Recipes */,
+				CA5C0F1A2C816E4700393EA7 /* Shopping Cart */,
 				07CF2F322B0A1D4C003B83AD /* Utils.swift */,
 				07A207412AFAF5100048B7EA /* Assets.xcassets */,
 				07A207432AFAF5100048B7EA /* Preview Content */,
+				CA5C0F1D2C82BEFE00393EA7 /* LaunchView.swift */,
 			);
 			path = SwiftBites;
 			sourceTree = "<group>";
@@ -139,6 +148,14 @@
 				CA5C0F142C740D6000393EA7 /* Ingredient.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		CA5C0F1A2C816E4700393EA7 /* Shopping Cart */ = {
+			isa = PBXGroup;
+			children = (
+				CA5C0F1B2C816E6E00393EA7 /* ShoppingCartView.swift */,
+			);
+			path = "Shopping Cart";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,12 +231,15 @@
 				0719D42F2B058E8D00B1A4E3 /* CategoryForm.swift in Sources */,
 				07A2073E2AFAF5100048B7EA /* Main.swift in Sources */,
 				CA5C0F132C740D4100393EA7 /* RecipeIngredient.swift in Sources */,
+				CA5C0F1E2C82BEFE00393EA7 /* LaunchView.swift in Sources */,
 				07CF2F372B0A39FE003B83AD /* RecipeCell.swift in Sources */,
 				0719D4342B0590B500B1A4E3 /* RecipesView.swift in Sources */,
+				CA5C0F1C2C816E6F00393EA7 /* ShoppingCartView.swift in Sources */,
 				CA5C0F152C740D6000393EA7 /* Ingredient.swift in Sources */,
 				07CF2F332B0A1D4C003B83AD /* Utils.swift in Sources */,
 				07F6DE3F2B04321F004AD929 /* IngredientForm.swift in Sources */,
 				CA5C0F172C740D7F00393EA7 /* SwiftBitesContainer.swift in Sources */,
+				CA5C0F202C82C46700393EA7 /* Color.swift in Sources */,
 				0719D42D2B058E8D00B1A4E3 /* CategoriesView.swift in Sources */,
 				0719D4332B0590B500B1A4E3 /* RecipeForm.swift in Sources */,
 				CA5C0F112C740CEF00393EA7 /* Recipe.swift in Sources */,
@@ -360,7 +380,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftBites/Preview Content\"";
-				DEVELOPMENT_TEAM = MTAQ5K5D6P;
+				DEVELOPMENT_TEAM = M54A7BX79B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -373,7 +393,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.learnto.SwiftBites;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bohdansolovey.SwiftBites;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -389,7 +409,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"SwiftBites/Preview Content\"";
-				DEVELOPMENT_TEAM = MTAQ5K5D6P;
+				DEVELOPMENT_TEAM = M54A7BX79B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -402,7 +422,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.learnto.SwiftBites;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bohdansolovey.SwiftBites;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

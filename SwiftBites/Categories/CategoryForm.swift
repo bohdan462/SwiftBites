@@ -10,19 +10,23 @@ struct CategoryForm: View {
     
     var mode: Mode
     
-    init(mode: Mode) {
+    init(mode: Mode, path: Binding<[CategoryForm.Mode]>) {
         self.mode = mode
         switch mode {
         case .add:
             _name = .init(initialValue: "")
+            _categoryPath = path
             title = "Add Category"
         case .edit(let category):
             _name = .init(initialValue: category.name)
+            _categoryPath = path
             title = "Edit \(category.name)"
         }
     }
     
     private let title: String
+    @Binding var categoryPath: [CategoryForm.Mode]
+    
     @State private var name: String
     @State private var error: Error?
     

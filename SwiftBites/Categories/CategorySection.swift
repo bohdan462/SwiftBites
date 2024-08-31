@@ -48,6 +48,7 @@ struct CategorySection: View {
     ContentUnavailableView(
       label: {
         Label("No Recipes", systemImage: "list.clipboard")
+              .foregroundStyle(Color.theme.accent)
       },
       description: {
         Text("Recipes you add will appear here.")

@@ -26,6 +26,7 @@ struct RecipeCell: View {
     VStack(alignment: .leading, spacing: 5) {
       Text(recipe.name)
         .font(.headline)
+        .foregroundStyle(Color.theme.secondary)
       Text(recipe.summary)
         .font(.subheadline)
       HStack(alignment: .center, spacing: 5) {
@@ -46,6 +47,7 @@ struct RecipeCell: View {
       .scaledToFill()
       .frame(maxHeight: 150)
       .clipShape(RoundedRectangle(cornerRadius: 10.0))
+      .shadow(color: Color.theme.secondary.opacity(0.2), radius: 10, x: 0, y: 5)
   }
 
   private var innerImage: Image {
@@ -64,7 +66,7 @@ struct RecipeCell: View {
       .bold()
       .padding(.vertical, 5)
       .padding(.horizontal, 10)
-      .background(Color.accent.opacity(0.1))
+      .background(Color.theme.accent.opacity(0.1))
       .foregroundStyle(.accent)
       .clipShape(Capsule())
   }

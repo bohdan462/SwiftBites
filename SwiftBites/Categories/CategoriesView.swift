@@ -5,12 +5,15 @@ struct CategoriesView: View {
     
     @State private var query = ""
     @Query private var categories: [Category]
+    @Binding var isNavigated: Bool
+    @Binding var categoryPath: [CategoryForm.Mode]
+    @Binding var path: [RecipeForm.Mode]
     @State private var refreshTrigger = false
     
     // MARK: - Body
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $categoryPath) {
             content
                 .navigationTitle("Categories")
                 .toolbar {
@@ -21,11 +24,21 @@ struct CategoriesView: View {
                     }
                 }
                 .navigationDestination(for: CategoryForm.Mode.self) { mode in
-                    CategoryForm(mode: mode)
+                    CategoryForm(mode: mode, path: $categoryPath)
                 }
                 .navigationDestination(for: RecipeForm.Mode.self) { mode in
-                    RecipeForm(mode: mode)
+                    RecipeForm(mode: mode, path: $path)
                 }
+        }
+        .onAppear {
+            if !isNavigated {
+                categoryPath.removeAll()
+            }
+        }
+        .onChange(of: isNavigated) { newValue in
+            if !newValue {
+                categoryPath.removeAll()
+            }
         }
     }
     
@@ -51,6 +64,7 @@ struct CategoriesView: View {
         ContentUnavailableView(
             label: {
                 Label("No Categories", systemImage: "list.clipboard")
+                    .foregroundStyle(Color.theme.accent)
             },
             description: {
                 Text("Categories you add will appear here.")

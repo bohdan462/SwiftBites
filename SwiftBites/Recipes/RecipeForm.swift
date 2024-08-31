@@ -11,48 +11,57 @@ struct RecipeForm: View {
     
     var mode: Mode
     
-    init(mode: Mode) {
+    init(mode: Mode, path: Binding<[RecipeForm.Mode]>) {
         self.mode = mode
+//        _path = .init(initialValue: path)
         switch mode {
         case .add:
             title = "Add Recipe"
+            _path = path
             _name = .init(initialValue: "")
             _summary = .init(initialValue: "")
             _serving = .init(initialValue: 1)
             _time = .init(initialValue: 5)
             _instructions = .init(initialValue: "")
-            _ingredients = .init(initialValue: [])
+            _recipeIngredients = .init(initialValue: [])
         case .edit(let recipe):
             title = "Edit \(recipe.name)"
+            _path = path
             _name = .init(initialValue: recipe.name)
             _summary = .init(initialValue: recipe.summary)
             _serving = .init(initialValue: recipe.serving)
             _time = .init(initialValue: recipe.time)
             _instructions = .init(initialValue: recipe.instructions)
-            _ingredients = .init(initialValue: recipe.ingredients)
+            _recipeIngredients = .init(initialValue: recipe.ingredients)
             _categoryId = .init(initialValue: recipe.category?.id)
             _imageData = .init(initialValue: recipe.imageData)
             
-      
+            
         }
     }
     
     private let title: String
+    
+    @Binding private var path: [RecipeForm.Mode]
+    
     @State private var name: String
     @State private var summary: String
     @State private var serving: Int
     @State private var time: Int
     @State private var instructions: String
     @State private var categoryId: Category.ID?
-    @State private var ingredients: [RecipeIngredient]
+    @State private var recipeIngredients: [RecipeIngredient]
     @State private var imageItem: PhotosPickerItem?
     @State private var imageData: Data?
     @State private var isIngredientsPickerPresented =  false
     @State private var error: Error?
+    
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var storage
+    
     @Query private var categories: [Category]
-
+    @Query private var ingredients: [Ingredient]
+    
     
     // MARK: - Body
     
@@ -91,20 +100,19 @@ struct RecipeForm: View {
     // MARK: - Views
     @MainActor
     private func ingredientPicker() -> some View {
-        IngredientsView { selectedIngredient in
+        IngredientsView(isNavigated: .constant(false), path: .constant([])) { selectedIngredient in
             
-            let existingRecipeIngredient = ingredients.contains(where: {$0.name == selectedIngredient.name})
+            let existingRecipeIngredient = recipeIngredients.contains(where: {$0.name == selectedIngredient.name})
             
             guard !existingRecipeIngredient else {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     self.error = .recipeIngredientExists
-                } 
+                }
                 return }
-
+            
             let recipeIngredient = RecipeIngredient(ingredient: selectedIngredient, quantity: "")
             storage.insert(recipeIngredient)
-            ingredients.append(recipeIngredient)
-
+            recipeIngredients.append(recipeIngredient)
         }
         .onAppear {
             
@@ -196,7 +204,7 @@ struct RecipeForm: View {
     @ViewBuilder
     private var ingredientsSection: some View {
         Section("Ingredients") {
-            if ingredients.isEmpty {
+            if recipeIngredients.isEmpty {
                 ContentUnavailableView(
                     label: {
                         Label("No Ingredients", systemImage: "list.clipboard")
@@ -211,10 +219,13 @@ struct RecipeForm: View {
                     }
                 )
             } else {
-                ForEach(ingredients) { ingredient in
+                ForEach(recipeIngredients) { ingredient in
                     HStack(alignment: .center) {
                         
+                        
+                        
                         Text(ingredient.name)
+                            .foregroundColor((ingredient.ingredient?.name.isEmpty == false) ? .primary : .gray)
                             .bold()
                             .layoutPriority(2)
                         Spacer()
@@ -223,8 +234,8 @@ struct RecipeForm: View {
                                 ingredient.quantity
                             },
                             set: { quantity in
-                                if let index = ingredients.firstIndex(where: { $0.id == ingredient.id }) {
-                                    ingredients[index].quantity = quantity
+                                if let index = recipeIngredients.firstIndex(where: { $0.id == ingredient.id }) {
+                                    recipeIngredients[index].quantity = quantity
                                 }
                             }
                         ))
@@ -279,7 +290,7 @@ struct RecipeForm: View {
         guard case .edit(let recipe) = mode else {
             fatalError("Delete unavailable in add mode")
         }
-
+        
         storage.delete(recipe)
         do {
             try storage.save()
@@ -292,7 +303,7 @@ struct RecipeForm: View {
     private func deleteIngredients(offsets: IndexSet) {
         withAnimation {
             if let index = offsets.first {
-               let recipeIngredient = ingredients.remove(at: index)
+                let recipeIngredient = recipeIngredients.remove(at: index)
                 storage.delete(recipeIngredient)
                 
             }
@@ -321,8 +332,8 @@ struct RecipeForm: View {
                 return
             }
             
-            ingredients.forEach({$0.recipe = recipe})
-            recipe.ingredients = ingredients
+            recipeIngredients.forEach({$0.recipe = recipe})
+            recipe.ingredients = recipeIngredients
             
             storage.insert(recipe)
             
@@ -335,7 +346,7 @@ struct RecipeForm: View {
         case .edit(let recipe):
             if recipe.name != name || recipe.summary != summary ||
                 recipe.category?.id != category?.id || recipe.serving != serving ||
-                recipe.time != time || recipe.ingredients != ingredients ||
+                recipe.time != time || recipe.ingredients != recipeIngredients ||
                 recipe.instructions != instructions || recipe.imageData != imageData {
                 
                 recipe.name = name
@@ -346,8 +357,10 @@ struct RecipeForm: View {
                 recipe.instructions = instructions
                 recipe.imageData = imageData
                 
-                ingredients.forEach({recipe.ingredients.append($0)})
-                ingredients.forEach({$0.recipe = recipe})
+                recipeIngredients.forEach({recipe.ingredients.append($0)})
+                recipeIngredients.forEach({$0.recipe = recipe})
+                
+                
                 
                 do {
                     try storage.save()

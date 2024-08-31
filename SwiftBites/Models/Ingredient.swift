@@ -11,16 +11,20 @@ import SwiftData
 @Model
 final class Ingredient: Identifiable, Hashable {
 
-    @Attribute let id: UUID
+    @Attribute(.unique) let id: UUID
     
-    @Attribute
+     @Attribute
      var name: String
     
-//    @Relationship(deleteRule: .nullify) var recipeIngredients: [RecipeIngredient]?
+    var available: Bool
+    
+    @Relationship(deleteRule: .nullify, inverse: \RecipeIngredient.ingredient)
+    private var recipeIngredients: [RecipeIngredient]?
 
-    init(id: UUID = UUID(), name: String = "") {
+    init(id: UUID = UUID(), name: String = "", available: Bool = false, recipeIngredients: [RecipeIngredient]? = []) {
         self.id = id
-        self.name = name
+        self.name = name.capitalized
+        self.available = available
     }
     
     static func == (lhs: Ingredient, rhs: Ingredient) -> Bool {

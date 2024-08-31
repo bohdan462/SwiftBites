@@ -50,6 +50,20 @@ final class Recipe: Identifiable, Hashable {
         self.imageData = imageData
     }
     
+     func filter() -> [RecipeIngredient] {
+        var output: [RecipeIngredient] = []
+        
+        for recipeIngredient in ingredients {
+            if let ingredient = recipeIngredient.ingredient {
+                
+            } else {
+                output.append(recipeIngredient)
+            }
+        }
+        
+        return output
+    }
+    
     static func == (lhs: Recipe, rhs: Recipe) -> Bool {
         lhs.id == rhs.id
     }

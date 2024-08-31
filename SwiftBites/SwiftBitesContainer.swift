@@ -51,35 +51,33 @@ class SwiftBitesContainer {
         
         do {
             let container = try ModelContainer(for: schema, configurations: configuration)
-                        if isEmpty(context: container.mainContext) {
-            
-                            let (ingredients, categories, recipes, recipeIngredients) = mockData()
-            
-                            // Inserting mock data into the context
-                            categories.forEach { container.mainContext.insert($0 as Category) }
-                            recipes.forEach { container.mainContext.insert($0 as Recipe) }
-                            ingredients.forEach { container.mainContext.insert($0 as Ingredient) }
-                            recipeIngredients.forEach({recipes[0].ingredients.append($0) })
-                            
-                            
-            
-                                            do {
-                                                try container.mainContext.save()
-                                            } catch {
-                                                fatalError("Error saving mock data: \(error)")
-                                            }
-            
-            
-                        }
+//                        if isEmpty(context: container.mainContext) {
+//            
+//                            let (ingredients, categories, recipes, recipeIngredients) = mockData()
+//            
+//                            // Inserting mock data into the context
+//                            categories.forEach { container.mainContext.insert($0 as Category) }
+//                            recipes.forEach { container.mainContext.insert($0 as Recipe) }
+//                            ingredients.forEach { container.mainContext.insert($0 as Ingredient) }
+//                            recipeIngredients.forEach({ container.mainContext.insert($0 as RecipeIngredient) })
+//                            
+//                            
+//            
+//                                            do {
+//                                                try container.mainContext.save()
+//                                            } catch {
+//                                                fatalError("Error saving mock data: \(error)")
+//                                            }
+//            
+//            
+//                        }
             return container
         } catch {
             fatalError("Error creating Model Container: \(error)")
         }
         
     }
-    
-    
-    
+
     private static func isEmpty(context: ModelContext) -> Bool {
         let descriptor = FetchDescriptor<Category>()
         
@@ -109,7 +107,7 @@ class SwiftBitesContainer {
         RecipeIngredient(ingredient: mozzarellaCheese, quantity: "1 cup, shredded"),
         RecipeIngredient(ingredient: freshBasilLeaves, quantity: "A handful"),
         RecipeIngredient(ingredient: extraVirginOliveOil, quantity: "2 tablespoons"),
-        RecipeIngredient(ingredient: salt, quantity: "Pinch"),
+        RecipeIngredient(ingredient: nil, quantity: "Pinch"),
     ]
         
         let margherita = Recipe(
@@ -122,8 +120,6 @@ class SwiftBitesContainer {
             imageData: UIImage(named: "margherita")?.pngData()
         )
         
-        
-        
         let ingredients: [Ingredient] = [pizzaDough,
                                          tomatoSauce,
                                          mozzarellaCheese,
@@ -133,10 +129,7 @@ class SwiftBitesContainer {
         let categories: [Category] = [italian,
                                       middleEastern]
         let recipes: [Recipe] = [margherita]
-        
-        
-        
-        // italian.recipes.append(margherita)
+        margherita.ingredients = recipeIngredients
         
         return (ingredients, categories, recipes, recipeIngredients)
     }

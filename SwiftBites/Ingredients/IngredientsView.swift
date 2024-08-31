@@ -5,9 +5,13 @@ struct IngredientsView: View {
     typealias Selection = (Ingredient) -> Void
     
     let selection: Selection?
+    @Binding var ingredientPath: [IngredientForm.Mode]
+    @Binding var isNavigated: Bool
     
-    init(selection: Selection? = nil) {
+    init(isNavigated: Binding<Bool>, path: Binding<[IngredientForm.Mode]>, selection: Selection? = nil) {
         self.selection = selection
+        _isNavigated = isNavigated
+        _ingredientPath = path
     }
     
     @Environment(\.modelContext) private var storage
@@ -19,7 +23,7 @@ struct IngredientsView: View {
     // MARK: - Body
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $ingredientPath) {
             content
                 .navigationTitle("Ingredients")
                 .toolbar {
@@ -30,9 +34,19 @@ struct IngredientsView: View {
                     }
                 }
                 .navigationDestination(for: IngredientForm.Mode.self) { mode in
-                    IngredientForm(mode: mode)
+                    IngredientForm(mode: mode, path: $ingredientPath)
                 }
                 .alert(error: $error)
+        }
+        .onAppear {
+            if !isNavigated {
+                ingredientPath.removeAll()
+            }
+        }
+        .onChange(of: isNavigated) { newValue in
+            if !newValue {
+                ingredientPath.removeAll()
+            }
         }
     }
     
@@ -57,6 +71,7 @@ struct IngredientsView: View {
         ContentUnavailableView(
             label: {
                 Label("No Ingredients", systemImage: "list.clipboard")
+                    .foregroundStyle(Color.theme.accent)
             },
             description: {
                 Text("Ingredients you add will appear here.")
@@ -89,6 +104,7 @@ struct IngredientsView: View {
                             Button("Delete", systemImage: "trash", role: .destructive) {
                                 delete(ingredient: ingredient)
                             }
+                            .tint(Color.theme.accent)
                         }
                 }
             }
@@ -103,10 +119,8 @@ struct IngredientsView: View {
             Button(
                 action: {
                     withAnimation {
-                        
                         selection(ingredient)
                         dismiss()
-                        
                     }
                 },
                 label: {
