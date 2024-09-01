@@ -54,7 +54,7 @@ final class Recipe: Identifiable, Hashable {
         var output: [RecipeIngredient] = []
         
         for recipeIngredient in ingredients {
-            if let ingredient = recipeIngredient.ingredient {
+            if let _ = recipeIngredient.ingredient {
                 
             } else {
                 output.append(recipeIngredient)

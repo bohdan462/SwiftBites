@@ -8,6 +8,7 @@ struct RecipesView: View {
     @State private var query = ""
     @State private var sortOrder = SortDescriptor(\Recipe.name)
     @Query private var recipes: [Recipe]
+    @State private var refreshTrigger = false
     
     // MARK: - Body
     
@@ -15,7 +16,6 @@ struct RecipesView: View {
         NavigationStack(path: $path) {
             content
                 .navigationTitle("Recipes")
-                .navigationBarTitleTextColor(Color.theme.secondary)
                 .toolbar {
                     if !recipes.isEmpty {
                         sortOptions
@@ -120,5 +120,9 @@ struct RecipesView: View {
             }
         }
         .searchable(text: $query)
+        .id(refreshTrigger)
+        .onAppear {
+            refreshTrigger.toggle()
+        }
     }
 }

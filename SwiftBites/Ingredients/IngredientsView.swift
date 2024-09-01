@@ -143,7 +143,13 @@ struct IngredientsView: View {
     
     private func delete(ingredient: Ingredient) {
         
-        storage.delete(ingredient)
+        for ingredientToDelete in ingredients {
+            if ingredientToDelete.id == ingredient.id {
+                storage.delete(ingredient)
+            }
+        }
+        
+//        storage.delete(ingredient)
         
         do {
             try storage.save()

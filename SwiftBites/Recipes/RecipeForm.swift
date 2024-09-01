@@ -24,6 +24,7 @@ struct RecipeForm: View {
             _time = .init(initialValue: 5)
             _instructions = .init(initialValue: "")
             _recipeIngredients = .init(initialValue: [])
+            _notAvailableRecipeIngredients = .init(initialValue: [])
         case .edit(let recipe):
             title = "Edit \(recipe.name)"
             _path = path
@@ -33,6 +34,7 @@ struct RecipeForm: View {
             _time = .init(initialValue: recipe.time)
             _instructions = .init(initialValue: recipe.instructions)
             _recipeIngredients = .init(initialValue: recipe.ingredients)
+            _notAvailableRecipeIngredients = .init(initialValue: recipe.filter())
             _categoryId = .init(initialValue: recipe.category?.id)
             _imageData = .init(initialValue: recipe.imageData)
             
@@ -51,6 +53,7 @@ struct RecipeForm: View {
     @State private var instructions: String
     @State private var categoryId: Category.ID?
     @State private var recipeIngredients: [RecipeIngredient]
+    @State private var notAvailableRecipeIngredients: [RecipeIngredient]
     @State private var imageItem: PhotosPickerItem?
     @State private var imageData: Data?
     @State private var isIngredientsPickerPresented =  false
@@ -221,11 +224,11 @@ struct RecipeForm: View {
             } else {
                 ForEach(recipeIngredients) { ingredient in
                     HStack(alignment: .center) {
-                        
-                        
-                        
                         Text(ingredient.name)
-                            .foregroundColor((ingredient.ingredient?.name.isEmpty == false) ? .primary : .gray)
+//                            .foregroundColor((ingredient.ingredient?.name.isEmpty == false) ? .primary : .gray)
+                            .foregroundColor(
+                                notAvailableRecipeIngredients.contains(ingredient) ? Color.gray : Color.primary
+                            )
                             .bold()
                             .layoutPriority(2)
                         Spacer()
@@ -284,7 +287,11 @@ struct RecipeForm: View {
     }
     
     // MARK: - Data
-    
+    private func isAvailable(_ recipe: Recipe, ingredient: RecipeIngredient) -> Bool {
+        
+        
+        return false
+    }
     
     private func delete(recipe: Recipe) {
         guard case .edit(let recipe) = mode else {

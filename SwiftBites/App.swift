@@ -12,7 +12,7 @@ struct SwiftBitesApp: App {
                     ContentView()
                     
                 }
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(.light)
                 .modelContainer(SwiftBitesContainer.create())
                 
                 ZStack {

@@ -2,6 +2,12 @@ import SwiftUI
 import SwiftData
 
 struct CategoriesView: View {
+    enum Destination {
+        case categoryForm(CategoryForm.Mode)
+        case recipeForm(RecipeForm.Mode)
+    }
+    
+   
     
     @State private var query = ""
     @Query private var categories: [Category]
@@ -13,7 +19,7 @@ struct CategoriesView: View {
     // MARK: - Body
     
     var body: some View {
-        NavigationStack(path: $categoryPath) {
+        NavigationStack() {
             content
                 .navigationTitle("Categories")
                 .toolbar {
@@ -24,7 +30,8 @@ struct CategoriesView: View {
                     }
                 }
                 .navigationDestination(for: CategoryForm.Mode.self) { mode in
-                    CategoryForm(mode: mode, path: $categoryPath)
+                    
+                    CategoryForm(mode: mode, path: .constant([]))
                 }
                 .navigationDestination(for: RecipeForm.Mode.self) { mode in
                     RecipeForm(mode: mode, path: $path)
@@ -32,12 +39,12 @@ struct CategoriesView: View {
         }
         .onAppear {
             if !isNavigated {
-                categoryPath.removeAll()
+                path.removeAll()
             }
         }
         .onChange(of: isNavigated) { newValue in
             if !newValue {
-                categoryPath.removeAll()
+                path.removeAll()
             }
         }
     }

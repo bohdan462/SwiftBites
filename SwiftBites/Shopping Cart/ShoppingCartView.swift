@@ -14,7 +14,9 @@ struct ShoppingCartView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var error: Error?
     @Query private var ingredients: [RecipeIngredient]
-    @Query private var recipes: [Recipe]
+    @Query(filter: #Predicate<Recipe> {
+        $0.ingredients.contains(where: {$0.ingredient == nil })
+    }, sort: \Recipe.name) private var recipes: [Recipe]
     
     
     // MARK: - Body
@@ -33,7 +35,7 @@ struct ShoppingCartView: View {
     
     @ViewBuilder
     private var shoppingCartSection: some View {
-        if recipes.isEmpty || !filter().isEmpty {
+        if recipes.isEmpty || filter().isEmpty {
             showContantUnavailable()
         }
         
@@ -65,7 +67,7 @@ struct ShoppingCartView: View {
        var output: [RecipeIngredient] = []
        
        for recipeIngredient in ingredients {
-           if let ingredient = recipeIngredient.ingredient {
+           if let _ = recipeIngredient.ingredient {
                
            } else {
                output.append(recipeIngredient)
