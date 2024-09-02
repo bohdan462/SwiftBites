@@ -28,7 +28,6 @@ struct SwiftBitesApp: App {
     }
     
     init() {
-        //        print(URL.applicationSupportDirectory.path(percentEncoded: false))
-        
+                print(URL.applicationSupportDirectory.path(percentEncoded: false))
     }
 }

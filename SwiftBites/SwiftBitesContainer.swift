@@ -22,16 +22,16 @@ enum Error: LocalizedError {
         switch self {
         case .ingredientExists:
             return "An ingredient with this name already exists. Please choose a different name."
-
+            
         case .categoryExists:
             return "A category with this name already exists. Consider using a unique name."
-
+            
         case .recipeExists:
             return "A recipe with this name is already saved. Try using another name to avoid duplicates."
-
+            
         case .recipeIngredientExists:
             return "This ingredient is already part of the recipe. Please add a different ingredient or update the existing one."
-
+            
         case .deleteError(let item):
             return "Failed to delete \(item)."
         case .addError(let item):
@@ -51,33 +51,33 @@ class SwiftBitesContainer {
         
         do {
             let container = try ModelContainer(for: schema, configurations: configuration)
-//                        if isEmpty(context: container.mainContext) {
-//            
-//                            let (ingredients, categories, recipes, recipeIngredients) = mockData()
-//            
-//                            // Inserting mock data into the context
-//                            categories.forEach { container.mainContext.insert($0 as Category) }
-//                            recipes.forEach { container.mainContext.insert($0 as Recipe) }
-//                            ingredients.forEach { container.mainContext.insert($0 as Ingredient) }
-//                            recipeIngredients.forEach({ container.mainContext.insert($0 as RecipeIngredient) })
-//                            
-//                            
-//            
-//                                            do {
-//                                                try container.mainContext.save()
-//                                            } catch {
-//                                                fatalError("Error saving mock data: \(error)")
-//                                            }
-//            
-//            
-//                        }
+            if isEmpty(context: container.mainContext) {
+                
+                let (ingredients, categories, recipes, recipeIngredients) = mockData()
+                
+                // Inserting mock data into the context
+                categories.forEach { container.mainContext.insert($0 as Category) }
+                recipes.forEach { container.mainContext.insert($0 as Recipe) }
+                ingredients.forEach { container.mainContext.insert($0 as Ingredient) }
+//                recipeIngredients.forEach({ container.mainContext.insert($0 as RecipeIngredient) })
+                
+                
+                
+                do {
+                    try container.mainContext.save()
+                } catch {
+                    fatalError("Error saving mock data: \(error)")
+                }
+                
+                
+            }
             return container
         } catch {
             fatalError("Error creating Model Container: \(error)")
         }
         
     }
-
+    
     private static func isEmpty(context: ModelContext) -> Bool {
         let descriptor = FetchDescriptor<Category>()
         
@@ -102,13 +102,13 @@ class SwiftBitesContainer {
         let salt = Ingredient(name: "Salt")
         
         let recipeIngredients = [
-        RecipeIngredient(ingredient: pizzaDough, quantity: "1 ball"),
-        RecipeIngredient(ingredient: tomatoSauce, quantity: "1/2 cup"),
-        RecipeIngredient(ingredient: mozzarellaCheese, quantity: "1 cup, shredded"),
-        RecipeIngredient(ingredient: freshBasilLeaves, quantity: "A handful"),
-        RecipeIngredient(ingredient: extraVirginOliveOil, quantity: "2 tablespoons"),
-        RecipeIngredient(ingredient: nil, quantity: "Pinch"),
-    ]
+            RecipeIngredient(ingredient: pizzaDough, quantity: "1 ball"),
+            RecipeIngredient(ingredient: tomatoSauce, quantity: "1/2 cup"),
+            RecipeIngredient(ingredient: mozzarellaCheese, quantity: "1 cup, shredded"),
+            RecipeIngredient(ingredient: freshBasilLeaves, quantity: "A handful"),
+            RecipeIngredient(ingredient: extraVirginOliveOil, quantity: "2 tablespoons"),
+            RecipeIngredient(ingredient: salt, quantity: "Pinch"),
+        ]
         
         let margherita = Recipe(
             name: "Classic Margherita Pizza",

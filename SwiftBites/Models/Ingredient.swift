@@ -10,17 +10,18 @@ import SwiftData
 
 @Model
 final class Ingredient: Identifiable, Hashable {
-
-    @Attribute(.unique) let id: UUID
     
-     @Attribute
-     var name: String
+    @Attribute(.unique) 
+    let id: UUID
+    
+    @Attribute
+    var name: String
     
     var available: Bool
     
     @Relationship(deleteRule: .nullify, inverse: \RecipeIngredient.ingredient)
     private var recipeIngredients: [RecipeIngredient]?
-
+    
     init(id: UUID = UUID(), name: String = "", available: Bool = false, recipeIngredients: [RecipeIngredient]? = []) {
         self.id = id
         self.name = name.capitalized

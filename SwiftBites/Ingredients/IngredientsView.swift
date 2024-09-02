@@ -18,7 +18,7 @@ struct IngredientsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var error: Error?
     @State private var query = ""
-    @Query private var ingredients: [Ingredient]
+    @Query(sort: \Ingredient.name) private var ingredients: [Ingredient]
     
     // MARK: - Body
     
@@ -148,12 +148,8 @@ struct IngredientsView: View {
                 storage.delete(ingredient)
             }
         }
-        
-//        storage.delete(ingredient)
-        
         do {
             try storage.save()
-            print("Successfill save after delete of ingredient")
         } catch {
             self.error = .deleteError(item: error.localizedDescription)
         }

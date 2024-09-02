@@ -22,6 +22,7 @@ struct LaunchView: View {
     @State private var counter: Int = 0
     @State private var loops: Int = 0
     @State private var stepper: Float = 0
+    
     @Binding var showLaunchView: Bool
     
     var body: some View {
@@ -70,13 +71,13 @@ struct LaunchView: View {
                 if counter == lastIndex {
                     counter = 0
                     loops += 1
-                    if loops >= 2 {
+                    if loops >= 1 {
                         showLaunchView = false
                         self.timer.upstream.connect().cancel()
                     }
                 } else {
                     counter += 1
-                    stepper = min(stepper + 0.0333, 1.0)
+                    stepper = min(stepper + 0.09, 1.0)
                 }
             }
         })

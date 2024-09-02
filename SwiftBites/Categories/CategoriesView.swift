@@ -2,19 +2,15 @@ import SwiftUI
 import SwiftData
 
 struct CategoriesView: View {
-    enum Destination {
-        case categoryForm(CategoryForm.Mode)
-        case recipeForm(RecipeForm.Mode)
-    }
-    
-   
     
     @State private var query = ""
+    @State private var refreshTrigger = false
+    
     @Query private var categories: [Category]
+    
     @Binding var isNavigated: Bool
     @Binding var categoryPath: [CategoryForm.Mode]
     @Binding var path: [RecipeForm.Mode]
-    @State private var refreshTrigger = false
     
     // MARK: - Body
     

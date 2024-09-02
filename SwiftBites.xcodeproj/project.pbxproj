@@ -99,6 +99,7 @@
 				CA5C0F162C740D7F00393EA7 /* SwiftBitesContainer.swift */,
 				07A2073B2AFAF5100048B7EA /* App.swift */,
 				07A2073D2AFAF5100048B7EA /* Main.swift */,
+				CA5C0F1D2C82BEFE00393EA7 /* LaunchView.swift */,
 				CA5C0F0D2C740C8C00393EA7 /* Models */,
 				0719D4252B058E1800B1A4E3 /* Categories */,
 				07B772002AFC1D2E007BF4B0 /* Ingredients */,
@@ -107,7 +108,6 @@
 				07CF2F322B0A1D4C003B83AD /* Utils.swift */,
 				07A207412AFAF5100048B7EA /* Assets.xcassets */,
 				07A207432AFAF5100048B7EA /* Preview Content */,
-				CA5C0F1D2C82BEFE00393EA7 /* LaunchView.swift */,
 			);
 			path = SwiftBites;
 			sourceTree = "<group>";

@@ -25,6 +25,7 @@ struct CategoryForm: View {
     }
     
     private let title: String
+    
     @Binding var categoryPath: [CategoryForm.Mode]
     
     @State private var name: String

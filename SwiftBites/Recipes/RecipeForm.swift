@@ -225,7 +225,6 @@ struct RecipeForm: View {
                 ForEach(recipeIngredients) { ingredient in
                     HStack(alignment: .center) {
                         Text(ingredient.name)
-//                            .foregroundColor((ingredient.ingredient?.name.isEmpty == false) ? .primary : .gray)
                             .foregroundColor(
                                 notAvailableRecipeIngredients.contains(ingredient) ? Color.gray : Color.primary
                             )
@@ -242,6 +241,9 @@ struct RecipeForm: View {
                                 }
                             }
                         ))
+                        .foregroundColor(
+                            notAvailableRecipeIngredients.contains(ingredient) ? Color.gray : Color.primary
+                        )
                         .layoutPriority(1)
                     }
                 }
@@ -288,8 +290,7 @@ struct RecipeForm: View {
     
     // MARK: - Data
     private func isAvailable(_ recipe: Recipe, ingredient: RecipeIngredient) -> Bool {
-        
-        
+
         return false
     }
     
@@ -366,8 +367,6 @@ struct RecipeForm: View {
                 
                 recipeIngredients.forEach({recipe.ingredients.append($0)})
                 recipeIngredients.forEach({$0.recipe = recipe})
-                
-                
                 
                 do {
                     try storage.save()

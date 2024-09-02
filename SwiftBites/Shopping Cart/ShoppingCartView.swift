@@ -12,7 +12,9 @@ struct ShoppingCartView: View {
     
     @Environment(\.modelContext) private var storage
     @Environment(\.dismiss) private var dismiss
+    
     @State private var error: Error?
+    
     @Query private var ingredients: [RecipeIngredient]
     @Query(filter: #Predicate<Recipe> {
         $0.ingredients.contains(where: {$0.ingredient == nil })
@@ -100,7 +102,7 @@ struct ShoppingCartView: View {
                     .foregroundStyle(Color.theme.accent)
             },
             description: {
-                Text("Missing ingredients for your recipes will automatically appear here. Create your first recipe to get started!")
+                Text("Missing ingredients for your recipes will automatically appear here.")
             },
             actions: {
                 
