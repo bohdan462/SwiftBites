@@ -53,23 +53,18 @@ class SwiftBitesContainer {
             let container = try ModelContainer(for: schema, configurations: configuration)
             if isEmpty(context: container.mainContext) {
                 
-                let (ingredients, categories, recipes, recipeIngredients) = mockData()
+                let (ingredients, categories, recipes) = mockData()
                 
-                // Inserting mock data into the context
+                /// Inserting mock data into the context
                 categories.forEach { container.mainContext.insert($0 as Category) }
                 recipes.forEach { container.mainContext.insert($0 as Recipe) }
                 ingredients.forEach { container.mainContext.insert($0 as Ingredient) }
-//                recipeIngredients.forEach({ container.mainContext.insert($0 as RecipeIngredient) })
-                
-                
-                
+
                 do {
                     try container.mainContext.save()
                 } catch {
                     fatalError("Error saving mock data: \(error)")
                 }
-                
-                
             }
             return container
         } catch {
@@ -89,7 +84,7 @@ class SwiftBitesContainer {
         }
     }
     
-    private static func mockData() -> ([Ingredient], [Category], [Recipe], [RecipeIngredient]) {
+    private static func mockData() -> ([Ingredient], [Category], [Recipe]) {
         
         let italian = Category(name: "Italian")
         let middleEastern = Category(name: "Middle Eastern")
@@ -131,6 +126,6 @@ class SwiftBitesContainer {
         let recipes: [Recipe] = [margherita]
         margherita.ingredients = recipeIngredients
         
-        return (ingredients, categories, recipes, recipeIngredients)
+        return (ingredients, categories, recipes)
     }
 }
