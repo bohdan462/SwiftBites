@@ -3,10 +3,12 @@ import SwiftData
 
 struct CategoriesView: View {
     
+    @Environment(\.modelContext) private var storage
+    
     @State private var query = ""
     @State private var refreshTrigger = false
     
-    @Query private var categories: [Category]
+    @Query(sort: \Category.name) private var categories: [Category]
     
     @Binding var isNavigated: Bool
     @Binding var categoryPath: [CategoryForm.Mode]
@@ -52,15 +54,28 @@ struct CategoriesView: View {
         if categories.isEmpty {
             empty
         } else {
-            list(for: categories.filter {
-                if query.isEmpty {
-                    return true
-                } else {
-                    return $0.name.localizedStandardContains(query)
-                }
-            })
+            list(for: filteredCategories)
         }
         
+    }
+    
+    private var filteredCategories: [Category] {
+        let categoryPredicate = #Predicate<Category> {
+            $0.name.localizedStandardContains(query)
+        }
+    
+        let descriptor = FetchDescriptor<Category>(
+            predicate: query.isEmpty ? nil : categoryPredicate,
+            sortBy: [SortDescriptor(\Category.name, order: .forward)]
+        )
+        
+        do {
+            let filteredCategories = try storage.fetch(descriptor)
+            return filteredCategories
+        }
+        catch {
+            return []
+        }
     }
     
     private var empty: some View {

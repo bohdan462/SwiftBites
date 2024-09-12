@@ -74,13 +74,28 @@ struct RecipesView: View {
         if recipes.isEmpty {
             empty
         } else {
-            list(for: recipes.filter {
-                if query.isEmpty {
-                    return true
-                } else {
-                    return $0.name.localizedStandardContains(query) || $0.summary.localizedStandardContains(query)
-                }
-            }.sorted(using: sortOrder))
+            list(for: filteredRecipes.sorted(using: sortOrder))
+        }
+    }
+    
+    private var filteredRecipes: [Recipe] {
+        let recipePredicate = #Predicate<Recipe> {
+            $0.name.localizedStandardContains(query)
+            ||
+            $0.summary.localizedStandardContains(query)
+        }
+    
+        let descriptor = FetchDescriptor<Recipe>(
+            predicate: query.isEmpty ? nil : recipePredicate,
+            sortBy: [SortDescriptor(\Recipe.name, order: .forward)]
+        )
+        
+        do {
+            let filteredRecipes = try storage.fetch(descriptor)
+            return filteredRecipes
+        }
+        catch {
+            return []
         }
     }
     
